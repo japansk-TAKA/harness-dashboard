@@ -110,6 +110,33 @@
     display: flex; flex-wrap: nowrap; gap: 0; align-items: flex-start;
   }
 
+  /* ── agent ownership group (wraps 1+ state-cols) ── */
+  .agent-group {
+    display: flex; flex-direction: row; align-items: flex-start; gap: 0;
+    border: 2px solid; border-radius: 10px;
+    padding: 18px 10px 10px; margin: 10px 2px 0;
+    position: relative; flex-shrink: 0;
+  }
+  .agent-group::before {
+    content: attr(data-agent);
+    position: absolute; top: -9px; left: 14px;
+    background: #0a0e0a; padding: 1px 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 3px;
+  }
+  .ag-sneezy  { border-color: #f59e0b; } .ag-sneezy::before  { color: #f59e0b; }
+  .ag-dopey   { border-color: #a78bfa; } .ag-dopey::before   { color: #a78bfa; }
+  .ag-unassigned { border-color: #ef4444; border-style: dashed; background: rgba(239,68,68,0.06); }
+  .ag-unassigned::before { color: #ef4444; content: attr(data-agent) " ⚠"; }
+  .ag-generic { border-color: #6b7280; border-style: dotted; } .ag-generic::before { color: #9ca3af; }
+  .ag-prince  { border-color: #ec4899; } .ag-prince::before  { color: #ec4899; }
+  .ag-happy   { border-color: #10b981; } .ag-happy::before   { color: #10b981; }
+  .ag-bashful { border-color: #06b6d4; } .ag-bashful::before { color: #06b6d4; }
+  .ag-grumpy  { border-color: #eab308; } .ag-grumpy::before  { color: #eab308; }
+  .ag-doc     { border-color: #f97316; } .ag-doc::before     { color: #f97316; }
+  .ag-queen   { border-color: #e879f9; } .ag-queen::before   { color: #e879f9; }
+
   /* ── state column (state box + agent tags stacked) ── */
   .state-col {
     display: flex; flex-direction: column; align-items: center;
@@ -530,21 +557,23 @@
     <div class="pipe-phase-row ph1">
       <div class="phase-row-label c1">① コンテキスト管理 — アイデア発掘 → 仕様確定</div>
       <div class="phase-states-row">
-        <div class="state-col">
-          <div class="state-jp">アイデア発掘</div>
-          <div class="state sbatch" data-sid="BATCH_SCOUT"><div class="state-name">BATCH<br>SCOUT</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">medical-rag</span>
-            <span class="sa-tag main">WebSearch</span>
+        <div class="agent-group ag-sneezy" data-agent="Sneezy">
+          <div class="state-col">
+            <div class="state-jp">アイデア発掘</div>
+            <div class="state sbatch" data-sid="BATCH_SCOUT"><div class="state-name">BATCH<br>SCOUT</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">medical-rag</span>
+              <span class="sa-tag main">WebSearch</span>
+            </div>
           </div>
-        </div>
-        <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">精選・採点</div>
-          <div class="state snew" data-sid="SCOUT_REFINE"><div class="state-name">SCOUT<br>REFINE</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/office-hours</span>
-            <span class="sa-tag">◎○△採点(6軸) → 5件</span>
+          <div class="arrow">›</div>
+          <div class="state-col">
+            <div class="state-jp">精選・採点</div>
+            <div class="state snew" data-sid="SCOUT_REFINE"><div class="state-name">SCOUT<br>REFINE</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/office-hours</span>
+              <span class="sa-tag">◎○△採点(6軸) → 5件</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
@@ -553,39 +582,47 @@
           <div class="hcheck-label">先生<br>GO<br><span style="font-size:9px;opacity:0.7">通知</span></div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">仕様深掘り</div>
-          <div class="state" data-sid="DISCOVER"><div class="state-name">DISCOVER</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/office-hours</span>
-            <span class="sa-tag">GUIDELINE_HINT→RAG→MEDICAL_BASIS</span>
+        <div class="agent-group ag-dopey" data-agent="Dopey">
+          <div class="state-col">
+            <div class="state-jp">仕様深掘り</div>
+            <div class="state" data-sid="DISCOVER"><div class="state-name">DISCOVER</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/office-hours</span>
+              <span class="sa-tag">GUIDELINE_HINT→RAG→MEDICAL_BASIS</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">根拠集約</div>
-          <div class="state snew" data-sid="EVIDENCE_GATE"><div class="state-name">EVIDENCE<br>GATE</div></div>
-          <div class="state-agents">
-            <span class="sa-tag">PMID/DOI検証</span>
-            <span class="sa-tag">MEDICAL_BASIS確認</span>
+        <div class="agent-group ag-unassigned" data-agent="担当未定">
+          <div class="state-col">
+            <div class="state-jp">根拠集約</div>
+            <div class="state snew" data-sid="EVIDENCE_GATE"><div class="state-name">EVIDENCE<br>GATE</div></div>
+            <div class="state-agents">
+              <span class="sa-tag">PMID/DOI検証</span>
+              <span class="sa-tag">MEDICAL_BASIS確認</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">UI設計</div>
-          <div class="state" data-sid="DESIGN"><div class="state-name">DESIGN</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/plan-eng-review</span>
-            <span class="sa-tag">design-inspiration.md</span>
+        <div class="agent-group ag-generic" data-agent="汎用">
+          <div class="state-col">
+            <div class="state-jp">UI設計</div>
+            <div class="state" data-sid="DESIGN"><div class="state-name">DESIGN</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/plan-eng-review</span>
+              <span class="sa-tag">design-inspiration.md</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">AIデザイン生成</div>
-          <div class="state snew" data-sid="AIDESIGN"><div class="state-name">AIDESIGN</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">Prince（王子）</span>
-            <span class="sa-tag">aidesigner</span>
+        <div class="agent-group ag-prince" data-agent="Prince">
+          <div class="state-col">
+            <div class="state-jp">AIデザイン生成</div>
+            <div class="state snew" data-sid="AIDESIGN"><div class="state-name">AIDESIGN</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">Prince（王子）</span>
+              <span class="sa-tag">aidesigner</span>
+            </div>
           </div>
         </div>
       </div>
@@ -597,12 +634,14 @@
     <div class="pipe-phase-row ph2">
       <div class="phase-row-label c2">② 決定論的実装 — コード生成</div>
       <div class="phase-states-row">
-        <div class="state-col">
-          <div class="state-jp">コード実装</div>
-          <div class="state" data-sid="BUILD"><div class="state-name">BUILD</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">design-html</span>
-            <span class="sa-tag">HERO→JS/React/PWA</span>
+        <div class="agent-group ag-happy" data-agent="Happy">
+          <div class="state-col">
+            <div class="state-jp">コード実装</div>
+            <div class="state" data-sid="BUILD"><div class="state-name">BUILD</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">design-html</span>
+              <span class="sa-tag">HERO→JS/React/PWA</span>
+            </div>
           </div>
         </div>
       </div>
@@ -614,57 +653,65 @@
     <div class="pipe-phase-row ph3">
       <div class="phase-row-label c3">③ ガードレール — 多層検証</div>
       <div class="phase-states-row">
-        <div class="state-col">
-          <div class="state-jp">計算式検証</div>
-          <div class="state snew" data-sid="VERIFY"><div class="state-name">VERIFY</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">独立エージェント</span>
-            <span class="sa-tag">数値再現</span>
+        <div class="agent-group ag-bashful" data-agent="Bashful">
+          <div class="state-col">
+            <div class="state-jp">計算式検証</div>
+            <div class="state snew" data-sid="VERIFY"><div class="state-name">VERIFY</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">独立エージェント</span>
+              <span class="sa-tag">数値再現</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">見た目確認</div>
-          <div class="state" data-sid="DESIGN_REVIEW"><div class="state-name">DESIGN<br>REVIEW</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/design-review</span>
-            <span class="sa-tag">7原則</span>
+        <div class="agent-group ag-generic" data-agent="汎用">
+          <div class="state-col">
+            <div class="state-jp">見た目確認</div>
+            <div class="state" data-sid="DESIGN_REVIEW"><div class="state-name">DESIGN<br>REVIEW</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/design-review</span>
+              <span class="sa-tag">7原則</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">品質検証</div>
-          <div class="state" data-sid="QA"><div class="state-name">QA</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/qa</span>
-            <span class="sa-tag">エッジ検証</span>
+        <div class="agent-group ag-grumpy" data-agent="Grumpy">
+          <div class="state-col">
+            <div class="state-jp">品質検証</div>
+            <div class="state" data-sid="QA"><div class="state-name">QA</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/qa</span>
+              <span class="sa-tag">エッジ検証</span>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+          <div class="state-col">
+            <div class="state-jp">セキュリティ審査</div>
+            <div class="state" data-sid="CODE_REVIEW"><div class="state-name">CODE<br>REVIEW</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/review</span>
+              <span class="sa-tag">敵対的</span>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+          <div class="state-col">
+            <div class="state-jp">ブラウザ実機確認</div>
+            <div class="state" data-sid="BROWSE_TEST"><div class="state-name">BROWSE<br>TEST</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">Playwright MCP</span>
+              <span class="sa-tag">スクショ確認</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">セキュリティ審査</div>
-          <div class="state" data-sid="CODE_REVIEW"><div class="state-name">CODE<br>REVIEW</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/review</span>
-            <span class="sa-tag">敵対的</span>
-          </div>
-        </div>
-        <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">ブラウザ実機確認</div>
-          <div class="state" data-sid="BROWSE_TEST"><div class="state-name">BROWSE<br>TEST</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">Playwright MCP</span>
-            <span class="sa-tag">スクショ確認</span>
-          </div>
-        </div>
-        <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">臨床安全確認</div>
-          <div class="state snew" data-sid="CLINICAL_REVIEW"><div class="state-name">CLINICAL<br>REVIEW</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">/office-hours</span>
-            <span class="sa-tag">禁忌・警告</span>
+        <div class="agent-group ag-doc" data-agent="Doc">
+          <div class="state-col">
+            <div class="state-jp">臨床安全確認</div>
+            <div class="state snew" data-sid="CLINICAL_REVIEW"><div class="state-name">CLINICAL<br>REVIEW</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">/office-hours</span>
+              <span class="sa-tag">禁忌・警告</span>
+            </div>
           </div>
         </div>
       </div>
@@ -676,12 +723,14 @@
     <div class="pipe-phase-row ph4">
       <div class="phase-row-label c4">④ 評価・承認 — Judge → 先生承認 → デプロイ</div>
       <div class="phase-states-row">
-        <div class="state-col">
-          <div class="state-jp">総合評価</div>
-          <div class="state" data-sid="EVALUATE"><div class="state-name">EVALUATE</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">shiraishi-judge</span>
-            <span class="sa-tag">EV-1〜3採点</span>
+        <div class="agent-group ag-queen" data-agent="Queen">
+          <div class="state-col">
+            <div class="state-jp">総合評価</div>
+            <div class="state" data-sid="EVALUATE"><div class="state-name">EVALUATE</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">shiraishi-judge</span>
+              <span class="sa-tag">EV-1〜3採点</span>
+            </div>
           </div>
         </div>
         <div class="arrow">›</div>
@@ -690,11 +739,13 @@
           <div class="hcheck-label">先生<br>承認<br><span style="font-size:9px;opacity:0.7">通知</span></div>
         </div>
         <div class="arrow">›</div>
-        <div class="state-col">
-          <div class="state-jp">公開デプロイ</div>
-          <div class="state" data-sid="SHIP"><div class="state-name">SHIP</div></div>
-          <div class="state-agents">
-            <span class="sa-tag main">gh-pages</span>
+        <div class="agent-group ag-generic" data-agent="汎用">
+          <div class="state-col">
+            <div class="state-jp">公開デプロイ</div>
+            <div class="state" data-sid="SHIP"><div class="state-name">SHIP</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">gh-pages</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1386,4 +1437,3 @@ window.addEventListener('load', function () {
 
 </body>
 </html>
-
