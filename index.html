@@ -331,223 +331,6 @@
 <div class="header-sub">v1 稼働中 · Round 11 完了 · v2 設計完了（白雪姫チーム11体 · Snow/opus + ワーカーsonnet · Advisor Toolパターン · Mirror指示書改善）· 2026-04-10</div>
 
 <!-- ════════════════════════════════════════════════
-     ⓪ ORCHESTRATOR / WORKER WORKFLOW
-════════════════════════════════════════════════ -->
-<div class="sec">⓪ オーケストレーター / ワーカー ワークフロー — 2レーン構造</div>
-<div class="pipe-wrap" style="padding:28px 36px 24px;">
-
-  <!-- Legend -->
-  <div style="display:flex;gap:24px;margin-bottom:20px;font-size:12px;color:#6b7280;">
-    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#1e3a5f;border:1px solid #60a5fa;vertical-align:middle;margin-right:5px;"></span>オーケストレーター（常駐・軽量）</span>
-    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#162f26;border:1px solid #6ee7b7;vertical-align:middle;margin-right:5px;"></span>ワーカー（毎回新規セッション）</span>
-    <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2a2010;border:2px solid #fbbf24;vertical-align:middle;margin-right:5px;"></span>ヒューマンゲート</span>
-    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#2a1212;border:1px solid #f87171;vertical-align:middle;margin-right:5px;"></span>エラー処理</span>
-  </div>
-
-  <!-- 2-lane diagram -->
-  <div style="display:grid;grid-template-columns:120px 1fr;gap:0;min-height:420px;">
-
-    <!-- Lane labels -->
-    <div style="display:flex;flex-direction:column;">
-      <div style="height:160px;display:flex;align-items:center;padding-right:16px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#60a5fa;line-height:1.4;text-align:right;width:100%;">Orchestrator<br><span style="font-weight:300;font-size:10px;color:#3b6eaa;">常駐 · 軽量<br>STATE遷移管理<br>session-memory R/W</span></div>
-      </div>
-      <div style="height:12px;border-bottom:1px dashed #2a2e48;"></div>
-      <div style="height:200px;display:flex;align-items:center;padding-right:16px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6ee7b7;line-height:1.4;text-align:right;width:100%;">Worker<br><span style="font-weight:300;font-size:10px;color:#3a7a5a;">毎回新規セッション<br>STATE指示書のみ<br>+ session-memory</span></div>
-      </div>
-      <div style="height:12px;border-bottom:1px dashed #2a2e48;"></div>
-      <div style="height:80px;display:flex;align-items:center;padding-right:16px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#f87171;line-height:1.4;text-align:right;width:100%;">Error<br><span style="font-weight:300;font-size:10px;color:#a05050;">差し戻し · リトライ</span></div>
-      </div>
-    </div>
-
-    <!-- Flow content -->
-    <div style="display:flex;flex-direction:column;">
-
-      <!-- Orchestrator lane -->
-      <div style="height:160px;background:#0d1525;border:1px solid #1a2a45;border-radius:6px;padding:16px 24px;display:flex;align-items:center;gap:0;overflow-x:auto;">
-
-        <!-- Read state -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">READ STATE</div>
-            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">harness-log.md</div>
-          </div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
-
-        <!-- Spawn worker -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">SPAWN</div>
-            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">ワーカー起動</div>
-            <div style="font-size:9px;color:#4a7ab5;">指示書 + session-memory</div>
-          </div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
-
-        <!-- Wait -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="background:#1a1e2e;border:1px dashed #3a3e58;border-radius:4px;padding:8px 14px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6b7280;">WAIT</div>
-            <div style="font-size:9px;color:#4b5563;margin-top:3px;">ワーカー完了待ち</div>
-          </div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
-
-        <!-- Receive result -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">RECEIVE</div>
-            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">成果物確認</div>
-            <div style="font-size:9px;color:#4a7ab5;">session-memory更新</div>
-          </div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
-
-        <!-- Gate check -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="width:44px;height:44px;border-radius:50%;background:#2a2010;border:2px solid #fbbf24;display:flex;align-items:center;justify-content:center;font-size:16px;">★</div>
-          <div style="font-size:9px;font-weight:700;color:#fbbf24;margin-top:4px;text-align:center;letter-spacing:0.04em;">GATE?</div>
-          <div style="font-size:8px;color:#8a7030;text-align:center;">GO / 後で</div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
-
-        <!-- Next state -->
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
-          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">ADVANCE</div>
-            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">次STATE遷移</div>
-            <div style="font-size:9px;color:#4a7ab5;">harness-log更新</div>
-          </div>
-        </div>
-
-        <div style="color:#2a3a58;font-size:14px;padding:0 8px;flex-shrink:0;">⟲</div>
-
-        <div style="font-size:9px;color:#3b5580;flex-shrink:0;">LOOP<br>全STATE<br>完了まで</div>
-
-      </div>
-
-      <!-- Divider -->
-      <div style="height:12px;border-bottom:1px dashed #2a2e48;position:relative;">
-        <!-- Down arrow from SPAWN to Worker -->
-        <div style="position:absolute;left:265px;top:-2px;color:#6ee7b7;font-size:16px;">↓</div>
-        <!-- Up arrow from Worker to RECEIVE -->
-        <div style="position:absolute;left:530px;top:-2px;color:#6ee7b7;font-size:16px;">↑</div>
-      </div>
-
-      <!-- Worker lane -->
-      <div style="height:200px;background:#0d1f15;border:1px solid #1a3a28;border-radius:6px;padding:16px 24px;display:flex;align-items:center;justify-content:center;gap:16px;">
-
-        <!-- Worker lifecycle -->
-        <div style="display:flex;align-items:center;gap:12px;">
-
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">NEW SESSION</div>
-              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">コンテキスト: クリーン</div>
-            </div>
-          </div>
-
-          <div style="color:#2a4a38;font-size:18px;">›</div>
-
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">LOAD</div>
-              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">STATE指示書</div>
-              <div style="font-size:9px;color:#3a7a5a;">+ session-memory</div>
-              <div style="font-size:9px;color:#3a7a5a;">+ harness-log.md</div>
-            </div>
-          </div>
-
-          <div style="color:#2a4a38;font-size:18px;">›</div>
-
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="background:#162f26;border:2px solid #6ee7b7;border-radius:4px;padding:12px 20px;text-align:center;">
-              <div style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">EXECUTE</div>
-              <div style="font-size:10px;color:#4a9a6a;margin-top:4px;">STATE の実作業</div>
-              <div style="font-size:9px;color:#3a7a5a;margin-top:2px;">SCOUT / BUILD / QA / ...</div>
-            </div>
-          </div>
-
-          <div style="color:#2a4a38;font-size:18px;">›</div>
-
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">OUTPUT</div>
-              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">成果物を</div>
-              <div style="font-size:9px;color:#3a7a5a;">session-memoryに記録</div>
-            </div>
-          </div>
-
-          <div style="color:#2a4a38;font-size:18px;">›</div>
-
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="background:#1a1e2e;border:1px dashed #3a3e58;border-radius:4px;padding:10px 16px;text-align:center;">
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6b7280;">END</div>
-              <div style="font-size:9px;color:#4b5563;margin-top:4px;">セッション終了</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Divider -->
-      <div style="height:12px;border-bottom:1px dashed #2a2e48;position:relative;">
-        <div style="position:absolute;left:400px;top:-2px;color:#f87171;font-size:16px;">↓</div>
-      </div>
-
-      <!-- Error handling lane -->
-      <div style="height:80px;background:#1a1010;border:1px solid #3a1a1a;border-radius:6px;padding:12px 24px;display:flex;align-items:center;gap:20px;">
-
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:6px 12px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.06em;">FAIL</div>
-          </div>
-          <div style="color:#5a2a2a;font-size:16px;">›</div>
-          <div style="background:#2a1a12;border:1px solid #fbbf24;border-radius:4px;padding:6px 12px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:0.06em;">CLASSIFY</div>
-            <div style="font-size:8px;color:#8a7030;margin-top:2px;">失敗種別判定</div>
-          </div>
-          <div style="color:#5a2a2a;font-size:16px;">›</div>
-        </div>
-
-        <!-- Branch: worker retry vs instruction fix -->
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div style="background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:4px 10px;">
-              <span style="font-size:9px;font-weight:700;color:#f87171;">ワーカーリトライ</span>
-              <span style="font-size:9px;color:#a05050;margin-left:6px;">上限 5回</span>
-            </div>
-            <div style="font-size:9px;color:#5a3a3a;">→ オーケストレーターがSPAWNへ戻る</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div style="background:#2a2010;border:1px solid #fbbf24;border-radius:4px;padding:4px 10px;">
-              <span style="font-size:9px;font-weight:700;color:#fbbf24;">指示書修正</span>
-              <span style="font-size:9px;color:#8a7030;margin-left:6px;">上限 3回</span>
-            </div>
-            <div style="font-size:9px;color:#5a4a2a;">→ Mirror（魔法の鏡）が指示書修正 → 再SPAWN</div>
-          </div>
-        </div>
-
-        <div style="margin-left:auto;background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:6px 12px;text-align:center;">
-          <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.06em;">ABORT</div>
-          <div style="font-size:8px;color:#a05050;margin-top:2px;">上限到達→人間へ</div>
-        </div>
-
-      </div>
-
-    </div><!-- /flow content -->
-  </div><!-- /grid -->
-</div><!-- /pipe-wrap -->
-
-<!-- ════════════════════════════════════════════════
      ① STATE MACHINE
 ════════════════════════════════════════════════ -->
 <div class="sec">① State Machine — 18 NODE パイプライン（①-A 先生判断まで · ①-B Dopey以降 · 3層防御 · セッション内通知×2 · 二重カウント制）</div>
@@ -798,6 +581,224 @@
     <strong style="color:#6ee7b7;">★ NEW</strong> — <strong>EVIDENCE_GATE</strong>（PMID/DOI実在検証+MEDICAL_BASIS充足チェック）追加 &nbsp;|&nbsp; <strong>Prince（王子）+ AIDESIGN STATE</strong>（aidesigner専任）追加 → BUILDはロジック実装に専念
   </div>
 </div>
+
+
+<!-- ════════════════════════════════════════════════
+     ⓪ ORCHESTRATOR / WORKER WORKFLOW
+════════════════════════════════════════════════ -->
+<div class="sec">⓪ オーケストレーター / ワーカー ワークフロー — 2レーン構造</div>
+<div class="pipe-wrap" style="padding:28px 36px 24px;">
+
+  <!-- Legend -->
+  <div style="display:flex;gap:24px;margin-bottom:20px;font-size:12px;color:#6b7280;">
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#1e3a5f;border:1px solid #60a5fa;vertical-align:middle;margin-right:5px;"></span>オーケストレーター（常駐・軽量）</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#162f26;border:1px solid #6ee7b7;vertical-align:middle;margin-right:5px;"></span>ワーカー（毎回新規セッション）</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2a2010;border:2px solid #fbbf24;vertical-align:middle;margin-right:5px;"></span>ヒューマンゲート</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#2a1212;border:1px solid #f87171;vertical-align:middle;margin-right:5px;"></span>エラー処理</span>
+  </div>
+
+  <!-- 2-lane diagram -->
+  <div style="display:grid;grid-template-columns:120px 1fr;gap:0;min-height:420px;">
+
+    <!-- Lane labels -->
+    <div style="display:flex;flex-direction:column;">
+      <div style="height:160px;display:flex;align-items:center;padding-right:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#60a5fa;line-height:1.4;text-align:right;width:100%;">Orchestrator<br><span style="font-weight:300;font-size:10px;color:#3b6eaa;">常駐 · 軽量<br>STATE遷移管理<br>session-memory R/W</span></div>
+      </div>
+      <div style="height:12px;border-bottom:1px dashed #2a2e48;"></div>
+      <div style="height:200px;display:flex;align-items:center;padding-right:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6ee7b7;line-height:1.4;text-align:right;width:100%;">Worker<br><span style="font-weight:300;font-size:10px;color:#3a7a5a;">毎回新規セッション<br>STATE指示書のみ<br>+ session-memory</span></div>
+      </div>
+      <div style="height:12px;border-bottom:1px dashed #2a2e48;"></div>
+      <div style="height:80px;display:flex;align-items:center;padding-right:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#f87171;line-height:1.4;text-align:right;width:100%;">Error<br><span style="font-weight:300;font-size:10px;color:#a05050;">差し戻し · リトライ</span></div>
+      </div>
+    </div>
+
+    <!-- Flow content -->
+    <div style="display:flex;flex-direction:column;">
+
+      <!-- Orchestrator lane -->
+      <div style="height:160px;background:#0d1525;border:1px solid #1a2a45;border-radius:6px;padding:16px 24px;display:flex;align-items:center;gap:0;overflow-x:auto;">
+
+        <!-- Read state -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">READ STATE</div>
+            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">harness-log.md</div>
+          </div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
+
+        <!-- Spawn worker -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">SPAWN</div>
+            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">ワーカー起動</div>
+            <div style="font-size:9px;color:#4a7ab5;">指示書 + session-memory</div>
+          </div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
+
+        <!-- Wait -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="background:#1a1e2e;border:1px dashed #3a3e58;border-radius:4px;padding:8px 14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6b7280;">WAIT</div>
+            <div style="font-size:9px;color:#4b5563;margin-top:3px;">ワーカー完了待ち</div>
+          </div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
+
+        <!-- Receive result -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">RECEIVE</div>
+            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">成果物確認</div>
+            <div style="font-size:9px;color:#4a7ab5;">session-memory更新</div>
+          </div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
+
+        <!-- Gate check -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#2a2010;border:2px solid #fbbf24;display:flex;align-items:center;justify-content:center;font-size:16px;">★</div>
+          <div style="font-size:9px;font-weight:700;color:#fbbf24;margin-top:4px;text-align:center;letter-spacing:0.04em;">GATE?</div>
+          <div style="font-size:8px;color:#8a7030;text-align:center;">GO / 後で</div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:18px;padding:0 8px;flex-shrink:0;">›</div>
+
+        <!-- Next state -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="background:#1e3a5f;border:1px solid #60a5fa;border-radius:4px;padding:8px 14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;">ADVANCE</div>
+            <div style="font-size:9px;color:#4a7ab5;margin-top:3px;">次STATE遷移</div>
+            <div style="font-size:9px;color:#4a7ab5;">harness-log更新</div>
+          </div>
+        </div>
+
+        <div style="color:#2a3a58;font-size:14px;padding:0 8px;flex-shrink:0;">⟲</div>
+
+        <div style="font-size:9px;color:#3b5580;flex-shrink:0;">LOOP<br>全STATE<br>完了まで</div>
+
+      </div>
+
+      <!-- Divider -->
+      <div style="height:12px;border-bottom:1px dashed #2a2e48;position:relative;">
+        <!-- Down arrow from SPAWN to Worker -->
+        <div style="position:absolute;left:265px;top:-2px;color:#6ee7b7;font-size:16px;">↓</div>
+        <!-- Up arrow from Worker to RECEIVE -->
+        <div style="position:absolute;left:530px;top:-2px;color:#6ee7b7;font-size:16px;">↑</div>
+      </div>
+
+      <!-- Worker lane -->
+      <div style="height:200px;background:#0d1f15;border:1px solid #1a3a28;border-radius:6px;padding:16px 24px;display:flex;align-items:center;justify-content:center;gap:16px;">
+
+        <!-- Worker lifecycle -->
+        <div style="display:flex;align-items:center;gap:12px;">
+
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">NEW SESSION</div>
+              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">コンテキスト: クリーン</div>
+            </div>
+          </div>
+
+          <div style="color:#2a4a38;font-size:18px;">›</div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">LOAD</div>
+              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">STATE指示書</div>
+              <div style="font-size:9px;color:#3a7a5a;">+ session-memory</div>
+              <div style="font-size:9px;color:#3a7a5a;">+ harness-log.md</div>
+            </div>
+          </div>
+
+          <div style="color:#2a4a38;font-size:18px;">›</div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#162f26;border:2px solid #6ee7b7;border-radius:4px;padding:12px 20px;text-align:center;">
+              <div style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">EXECUTE</div>
+              <div style="font-size:10px;color:#4a9a6a;margin-top:4px;">STATE の実作業</div>
+              <div style="font-size:9px;color:#3a7a5a;margin-top:2px;">SCOUT / BUILD / QA / ...</div>
+            </div>
+          </div>
+
+          <div style="color:#2a4a38;font-size:18px;">›</div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#162f26;border:1px solid #6ee7b7;border-radius:4px;padding:10px 16px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6ee7b7;">OUTPUT</div>
+              <div style="font-size:9px;color:#3a7a5a;margin-top:4px;">成果物を</div>
+              <div style="font-size:9px;color:#3a7a5a;">session-memoryに記録</div>
+            </div>
+          </div>
+
+          <div style="color:#2a4a38;font-size:18px;">›</div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="background:#1a1e2e;border:1px dashed #3a3e58;border-radius:4px;padding:10px 16px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#6b7280;">END</div>
+              <div style="font-size:9px;color:#4b5563;margin-top:4px;">セッション終了</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:12px;border-bottom:1px dashed #2a2e48;position:relative;">
+        <div style="position:absolute;left:400px;top:-2px;color:#f87171;font-size:16px;">↓</div>
+      </div>
+
+      <!-- Error handling lane -->
+      <div style="height:80px;background:#1a1010;border:1px solid #3a1a1a;border-radius:6px;padding:12px 24px;display:flex;align-items:center;gap:20px;">
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:6px 12px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.06em;">FAIL</div>
+          </div>
+          <div style="color:#5a2a2a;font-size:16px;">›</div>
+          <div style="background:#2a1a12;border:1px solid #fbbf24;border-radius:4px;padding:6px 12px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:0.06em;">CLASSIFY</div>
+            <div style="font-size:8px;color:#8a7030;margin-top:2px;">失敗種別判定</div>
+          </div>
+          <div style="color:#5a2a2a;font-size:16px;">›</div>
+        </div>
+
+        <!-- Branch: worker retry vs instruction fix -->
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:4px 10px;">
+              <span style="font-size:9px;font-weight:700;color:#f87171;">ワーカーリトライ</span>
+              <span style="font-size:9px;color:#a05050;margin-left:6px;">上限 5回</span>
+            </div>
+            <div style="font-size:9px;color:#5a3a3a;">→ オーケストレーターがSPAWNへ戻る</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#2a2010;border:1px solid #fbbf24;border-radius:4px;padding:4px 10px;">
+              <span style="font-size:9px;font-weight:700;color:#fbbf24;">指示書修正</span>
+              <span style="font-size:9px;color:#8a7030;margin-left:6px;">上限 3回</span>
+            </div>
+            <div style="font-size:9px;color:#5a4a2a;">→ Mirror（魔法の鏡）が指示書修正 → 再SPAWN</div>
+          </div>
+        </div>
+
+        <div style="margin-left:auto;background:#2a1212;border:1px solid #f87171;border-radius:4px;padding:6px 12px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.06em;">ABORT</div>
+          <div style="font-size:8px;color:#a05050;margin-top:2px;">上限到達→人間へ</div>
+        </div>
+
+      </div>
+
+    </div><!-- /flow content -->
+  </div><!-- /grid -->
+</div><!-- /pipe-wrap -->
 
 <!-- ════════════════════════════════════════════════
      ② 専門エージェントマッピング
