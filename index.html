@@ -550,13 +550,13 @@
 <!-- ════════════════════════════════════════════════
      ① STATE MACHINE
 ════════════════════════════════════════════════ -->
-<div class="sec">① State Machine — 17 NODE パイプライン（オーケストレーター/ワーカー分離 · セッション内通知×2 · 二重カウント制）</div>
+<div class="sec">① State Machine — 18 NODE パイプライン（①-A 先生判断まで · ①-B Dopey以降 · 3層防御 · セッション内通知×2 · 二重カウント制）</div>
 <div class="pipe-wrap">
   <div id="pipelineContainer">
 
-    <!-- ① コンテキスト管理 -->
+    <!-- ①-A アイデア発掘 → 先生判断 -->
     <div class="pipe-phase-row ph1">
-      <div class="phase-row-label c1">① コンテキスト管理 — アイデア発掘 → 仕様確定</div>
+      <div class="phase-row-label c1">①-A コンテキスト管理（前半）— アイデア発掘 → 先生が選ぶ</div>
       <div class="phase-states-row">
         <div class="agent-group ag-sneezy" data-agent="Sneezy">
           <div class="state-col">
@@ -565,6 +565,15 @@
             <div class="state-agents">
               <span class="sa-tag main">medical-rag</span>
               <span class="sa-tag main">WebSearch</span>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+          <div class="state-col">
+            <div class="state-jp">文献実在確認</div>
+            <div class="state snew" data-sid="SCOUT_VERIFY"><div class="state-name">SCOUT<br>VERIFY</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">triangulation</span>
+              <span class="sa-tag">PMID/DOI 3ソース照合</span>
             </div>
           </div>
           <div class="arrow">›</div>
@@ -582,25 +591,42 @@
           <div class="hcheck-icon">★</div>
           <div class="hcheck-label">先生<br>GO<br><span style="font-size:9px;opacity:0.7">通知</span></div>
         </div>
-        <div class="arrow">›</div>
+      </div>
+    </div><!-- /ph1-A -->
+
+    <div class="phase-gap"></div>
+
+    <!-- ①-B 仕様確定 → 設計（Dopey以降） -->
+    <div class="pipe-phase-row ph1" style="border-left-color:#38bdf8;">
+      <div class="phase-row-label" style="color:#38bdf8;">①-B コンテキスト管理（後半）— 仕様確定 → 設計 · 3層ハルシネーション防御</div>
+      <div class="phase-states-row">
         <div class="agent-group ag-dopey" data-agent="Dopey">
           <div class="state-col">
             <div class="state-jp">仕様深掘り</div>
             <div class="state" data-sid="DISCOVER"><div class="state-name">DISCOVER</div></div>
             <div class="state-agents">
-              <span class="sa-tag main">/office-hours</span>
-              <span class="sa-tag">GUIDELINE_HINT→RAG→MEDICAL_BASIS</span>
+              <span class="sa-tag main">RAG_PREFLIGHT</span>
+              <span class="sa-tag">vector chunks≥1必須</span>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+          <div class="state-col">
+            <div class="state-jp">office-hours設計</div>
+            <div class="state" data-sid="DISCOVER_OH"><div class="state-name">office-<br>hours</div></div>
+            <div class="state-agents">
+              <span class="sa-tag main">テンプレート必須</span>
+              <span class="sa-tag">§3-5 RAG原典コピペ</span>
             </div>
           </div>
         </div>
         <div class="arrow">›</div>
         <div class="agent-group ag-unassigned" data-agent="担当未定">
           <div class="state-col">
-            <div class="state-jp">根拠集約</div>
+            <div class="state-jp">根拠照合+修正</div>
             <div class="state snew" data-sid="EVIDENCE_GATE"><div class="state-name">EVIDENCE<br>GATE</div></div>
             <div class="state-agents">
-              <span class="sa-tag">PMID/DOI検証</span>
-              <span class="sa-tag">MEDICAL_BASIS確認</span>
+              <span class="sa-tag">Phase A→B→C</span>
+              <span class="sa-tag">CORRECTED判定</span>
             </div>
           </div>
         </div>
@@ -627,7 +653,7 @@
           </div>
         </div>
       </div>
-    </div><!-- /ph1 -->
+    </div><!-- /ph1-B -->
 
     <div class="phase-gap"></div>
 
@@ -1232,6 +1258,26 @@
     <strong>judge-report の知識再利用（未実装 — 優先度: 高）</strong>
     過去11アプリの judge-report（失敗パターン）が medical-rag に取り込まれていない。「同じミスを繰り返さない」自己改善経路が存在しない。v2で ingest_judge_report.py を追加予定。
   </div>
+  <div class="gi" style="border-left-color:#6ee7b7;">
+    <strong style="color:#6ee7b7;">✅ 対処済み — RAG一次資料拡充 Phase 1〜4（2026-04-11〜12）</strong>
+    JSA第4版1訂 12カテゴリ全PDFダウンロード＋海外5文献（Rollins/Gan/Thilen/CDC/Nickalls）= 17エントリ。旧第3版第4訂をdeprecatedに退避。gate check 17/17 PASS。
+  </div>
+  <div class="gi" style="border-left-color:#6ee7b7;">
+    <strong style="color:#6ee7b7;">✅ 対処済み — Dopeyプロンプトテンプレート化（2026-04-12）</strong>
+    office-hoursへの入力をテンプレート化。セクション3〜5はRAG原典コピペ必須（要約・丸め禁止）。Dopeyの創造性はセクション6（臨床シーンの問い）のみ許可。数値劣化防止。
+  </div>
+  <div class="gi" style="border-left-color:#6ee7b7;">
+    <strong style="color:#6ee7b7;">✅ 対処済み — EVIDENCE_GATE修正権限追加（2026-04-12）</strong>
+    判定のみ→照合+修正。Phase A(構造チェック) → Phase B(数値・文献の原典照合+CORRECT修正) → Phase C(総合判定)の3フェーズに再構成。CORRECTED判定を新設。
+  </div>
+  <div class="gi" style="border-left-color:#6ee7b7;">
+    <strong style="color:#6ee7b7;">✅ 対処済み — 偽PARTIALパターン対策（2026-04-12）</strong>
+    Dopeyテスト5件で発見: vector chunks=0でもLLMがentityグラフから推論し無関係文献を引用するバグ。<code>vector chunks = 0 → 強制MISS</code>ルールをharness.md + dopey-discover.mdに追加。
+  </div>
+  <div class="gi" style="border-left-color:#fbbf24;">
+    <strong style="color:#fbbf24;">🔄 進行中 — ingest-queue消化（2026-04-12）</strong>
+    Sneezyテスト2回で19件の検証済み文献をingest-queue登録。5件のDopeyテスト対象文献を優先ingest中。完了後にRAG 17→22件。全19件完了で36件に倍増予定。
+  </div>
 </div>
 
 <!-- ════════════════════════════════════════════════
@@ -1281,8 +1327,110 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════════
+     ⑪ Sneezy / Dopey テスト結果（2026-04-12）
+════════════════════════════════════════════════ -->
+<div class="sec">⑪ エージェントテスト結果 — Sneezy 2回 + Dopey 5件（2026-04-12）</div>
+
+<div class="grid-2">
+  <div class="card hl">
+    <div class="card-head">
+      <div class="card-title">Sneezy（Scout）テスト — 2回実行</div>
+      <span class="badge ok">ハルシネーション 0</span>
+    </div>
+    <table class="lt" style="font-size:11px;">
+      <tr><th>指標</th><th>1回目</th><th>2回目</th></tr>
+      <tr><td>生成テーマ数</td><td>10</td><td>10</td></tr>
+      <tr><td>VERIFIED</td><td>7</td><td>10</td></tr>
+      <tr><td>DEGRADED</td><td>2</td><td>0</td></tr>
+      <tr><td>CONFLICT（除外）</td><td>1</td><td>0</td></tr>
+      <tr><td>ハルシネーション</td><td style="color:#6ee7b7;">0</td><td style="color:#6ee7b7;">0</td></tr>
+      <tr><td>テーマ重複（2回間）</td><td colspan="2">1件のみ（術後せん妄）</td></tr>
+      <tr><td>文献重複（2回間）</td><td colspan="2">0件</td></tr>
+      <tr><td>SCOUT_REFINE 上位5件</td><td colspan="2">30/29/29/28/27点</td></tr>
+    </table>
+    <div style="font-size:10px;color:#6b7280;margin-top:10px;">
+      全文献PMID/DOI付き。triangulation全VERIFIED/DEGRADED。ingest-queue 19件蓄積。
+    </div>
+  </div>
+
+  <div class="card wn">
+    <div class="card-head">
+      <div class="card-title">Dopey（Discover）テスト — 5件並列</div>
+      <span class="badge warn">バグ1件発見</span>
+    </div>
+    <table class="lt" style="font-size:11px;">
+      <tr><th>#</th><th>テーマ</th><th>RAG</th><th>triangulation</th><th>リスク</th></tr>
+      <tr><td>1</td><td>抗凝固薬タイミング</td><td class="sc" style="color:#f87171;">MISS</td><td style="color:#6ee7b7;">VERIFIED</td><td style="color:#f87171;">HIGH</td></tr>
+      <tr><td>2</td><td>術前抗凝固薬休薬</td><td class="sc" style="color:#f87171;">MISS</td><td style="color:#6ee7b7;">VERIFIED</td><td style="color:#6ee7b7;">低</td></tr>
+      <tr><td>3</td><td>術後せん妄PIPRA</td><td class="sc" style="color:#f87171;">MISS</td><td style="color:#6ee7b7;">VERIFIED</td><td style="color:#f87171;">HIGH</td></tr>
+      <tr><td>4</td><td>術中低血圧リスク</td><td class="sc" style="color:#f87171;">MISS</td><td style="color:#6ee7b7;">VERIFIED</td><td style="color:#f87171;">HIGH</td></tr>
+      <tr><td>5</td><td>肥満患者用量</td><td class="sc" style="color:#fbbf24;">PARTIAL</td><td style="color:#6ee7b7;">VERIFIED</td><td style="color:#fbbf24;">低〜中</td></tr>
+    </table>
+    <div style="font-size:10px;color:#6b7280;margin-top:10px;">
+      <strong style="color:#fbbf24;">発見されたバグ:</strong> vector chunks=0でLLMが偽回答生成（PONV文献を術後せん妄の根拠として引用）。<br>
+      <strong style="color:#6ee7b7;">対策済み:</strong> <code style="font-size:9px;background:#1e2235;padding:2px 6px;border-radius:2px;">vector chunks=0 → 強制MISS</code> ルール追加。
+    </div>
+  </div>
+</div>
+
+<!-- 3層ハルシネーション防御 -->
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">3層ハルシネーション防御（2026-04-12 完成）</div>
+  <div style="display:flex;gap:20px;">
+    <div style="flex:1;padding:14px;background:#0e0f12;border-radius:4px;border:1px solid #1e2235;">
+      <div style="font-size:10px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Layer 0 — RAG_PREFLIGHT</div>
+      <div style="font-size:11px;line-height:1.5;">
+        vector chunks必須判定<br>
+        chunks=0 → 強制MISS<br>
+        <span style="color:#6b7280;">偽PARTIALパターン防止</span>
+      </div>
+    </div>
+    <div style="flex:1;padding:14px;background:#0e0f12;border-radius:4px;border:1px solid #1e2235;">
+      <div style="font-size:10px;font-weight:700;color:#6ee7b7;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Layer 1 — Dopeyテンプレート</div>
+      <div style="font-size:11px;line-height:1.5;">
+        office-hoursプロンプト定型化<br>
+        セクション3〜5: RAG原典コピペ必須<br>
+        <span style="color:#6b7280;">数値丸め・意訳禁止</span>
+      </div>
+    </div>
+    <div style="flex:1;padding:14px;background:#0e0f12;border-radius:4px;border:1px solid #1e2235;">
+      <div style="font-size:10px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Layer 2 — EVIDENCE_GATE</div>
+      <div style="font-size:11px;line-height:1.5;">
+        3フェーズ照合+修正<br>
+        Phase A: 構造 → B: 原典照合 → C: 総合判定<br>
+        <span style="color:#6b7280;">CORRECTED判定で自動修正</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RAG成長 -->
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">Medical RAG 成長マップ</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div style="text-align:center;padding:12px 20px;background:#0e0f12;border-radius:4px;border:1px solid #1e2235;">
+      <div style="font-size:28px;font-weight:700;color:#374151;">17</div>
+      <div style="font-size:10px;color:#6b7280;">現在のRAG</div>
+    </div>
+    <div style="color:#374151;font-size:18px;">→</div>
+    <div style="text-align:center;padding:12px 20px;background:#0e0f12;border-radius:4px;border:1px solid #fbbf24;">
+      <div style="font-size:28px;font-weight:700;color:#fbbf24;">22</div>
+      <div style="font-size:10px;color:#fbbf24;">ingest中（+5）</div>
+    </div>
+    <div style="color:#374151;font-size:18px;">→</div>
+    <div style="text-align:center;padding:12px 20px;background:#0e0f12;border-radius:4px;border:1px solid #6ee7b7;">
+      <div style="font-size:28px;font-weight:700;color:#6ee7b7;">36</div>
+      <div style="font-size:10px;color:#6ee7b7;">全queue消化後</div>
+    </div>
+  </div>
+  <div style="font-size:10px;color:#6b7280;margin-top:10px;">
+    JSA第4版1訂 12カテゴリ + 海外5文献 = 17件（verified/）。ingest-queue 19件（Sneezyテスト2回分）。
+  </div>
+</div>
+
 <div class="footer">
-  Shiraishi Harness — 2026-04-10 · Round 11 完了 · v2 設計完了（白雪姫チーム11体 · Advisor Toolパターン · Mirror指示書改善 · EVIDENCE_GATE · Prince/AIDESIGN） · 医療AIフレームワーク対応マップ統合版
+  Shiraishi Harness — 2026-04-12 · Round 11 完了 · ハルシネーション防御3層完成 · Sneezy/Dopeyテスト完了 · RAG 17→36件拡充中 · 医療AIフレームワーク対応マップ統合版
 </div>
 
 <script>
