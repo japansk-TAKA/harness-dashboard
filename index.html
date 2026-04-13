@@ -24,19 +24,6 @@
                     colors: {
                         base: '#05070a',
                         surface: '#0f131a',
-                        agent: {
-                            snow: '#ffffff',
-                            sneezy: '#f59e0b',
-                            dopey: '#8b5cf6',
-                            prince: '#ec4899',
-                            happy: '#10b981',
-                            bashful: '#0ea5e9',
-                            grumpy: '#eab308',
-                            doc: '#f97316',
-                            queen: '#d946ef',
-                            sleepy: '#64748b',
-                            mirror: '#e2e8f0',
-                        }
                     }
                 }
             }
@@ -135,7 +122,7 @@
 
         <div class="text-right font-mono text-xs text-slate-500">
             <div class="">SYS_LOAD: <span class="text-emerald-400">12%</span></div>
-            <div class="">AGENTS_ACTIVE: <span class="text-cyan-400">11/11</span></div>
+            <div class="">AGENTS_ACTIVE: <span class="text-cyan-400">12/12</span></div>
         </div>
     </header>
 
@@ -150,7 +137,6 @@
             <button onclick="toggleExpandPipeline()" id="toggle-expand-btn" class="fixed top-[96px] right-10 z-[100] glass-panel px-5 py-2.5 border border-white/20 rounded-lg hover:border-cyan-400 hover:bg-cyan-900/20 transition-all font-mono text-xs text-white/80 hover:text-white flex items-center gap-3 group shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer overflow-hidden">
                 <i id="expand-icon" class="ph-bold ph-arrows-out-line-horizontal text-cyan-400 group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all text-lg"></i>
                 <span id="expand-text" class="tracking-widest font-bold">EXPAND ALL</span>
-                <!-- Subtle internal scanline effect -->
                 <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,240,255,0.05)_50%)] bg-[length:100%_4px] rounded-lg pointer-events-none mix-blend-screen opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
 
@@ -168,9 +154,9 @@
                         <p class="font-sans text-[10px] text-slate-400 truncate mt-0.5">アイデア抽出と文献検証</p>
                     </div>
 
-                    <!-- Expansion Hit Zone & Visualization -->
+                    <!-- Expansion -->
                     <div class="expansion-area absolute left-[280px] inset-y-[-10px] z-50 flex items-center gap-6 opacity-0 -translate-x-6 pointer-events-none group-hover/row:opacity-100 group-hover/row:translate-x-0 group-hover/row:pointer-events-auto transition-all duration-500 ease-out pl-[1.5rem]">
-                        <div class="absolute inset-0 bg-transparent -z-20"></div> <!-- Invisible structural hover bridge -->
+                        <div class="absolute inset-0 bg-transparent -z-20"></div>
                         <div class="absolute left-[1.5rem] top-1/2 -mt-[1px] h-[2px] w-[1500px] bg-gradient-to-r from-blue-500/50 to-transparent -z-10 mix-blend-screen shadow-[0_0_10px_rgba(59,130,246,0.8)] pointer-events-none"></div>
                         
                         <div class="node-card relative w-[130px] shrink-0 group/card text-amber-500">
@@ -306,16 +292,18 @@
 
                         <i class="ph-bold ph-arrow-right text-cyan-400 text-xl drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]"></i>
 
-                        <div class="node-card relative w-[130px] shrink-0 group/card text-white/50">
-                            <div class="bg-surface/95 border border-white/20 rounded p-2 relative z-30">
+                        <!-- Apple Agent Update -->
+                        <div class="node-card relative w-[130px] shrink-0 group/card text-[#dc2626]">
+                            <div class="bg-surface/95 border border-[#dc2626]/50 rounded shadow-[0_0_10px_rgba(220,38,38,0.2)] p-2 relative z-30">
                                 <div class="h-1 w-full bg-cyan-400 mb-1 rounded-full drop-shadow-[0_0_3px_rgba(34,211,238,0.8)]"></div>
                                 <h3 class="font-mono text-xs font-bold truncate text-white">DESIGN</h3>
                                 <p class="font-sans text-[10px] text-slate-400 truncate">UI設計</p>
+                                <i class="ph-fill ph-robot text-[#dc2626] absolute -top-2 -right-2 text-lg bg-base rounded-full"></i>
                             </div>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[220px] bg-base/95 border border-white/20 rounded p-3 opacity-0 group-hover/card:opacity-100 pointer-events-none drop-shadow-2xl z-[60] transition-opacity">
-                                <div class="text-[9px] uppercase text-slate-400 font-bold mb-1">[汎用エージェント]</div>
-                                <div class="text-xs font-mono text-white mb-1 border-b border-white/10 pb-1">Tools: /plan-eng-review</div>
-                                <div class="text-[10px] text-slate-300 font-sans">UI/UXの基本ワイヤーフレーム構成を定義。</div>
+                                <div class="text-[9px] uppercase text-[#dc2626] font-bold mb-1">[Agent: Apple]</div>
+                                <div class="text-xs font-mono text-white mb-1 border-b border-white/10 pb-1 w-full whitespace-normal">Tools: /plan-eng-review,<br>design-inspiration.md</div>
+                                <div class="text-[10px] text-slate-300 font-sans mt-1">アーキテクチャ選定 + 医学的根拠チェック → 設計doc生成</div>
                             </div>
                         </div>
 
@@ -602,7 +590,7 @@
                     </div>
                 </div>
 
-                <!-- Agent Cards... -->
+                <!-- Agent Cards -->
                 <div class="glass-panel rounded-xl p-5 border-amber-500/20 hover:border-amber-500/50 transition-colors group">
                     <div class="flex justify-between items-start mb-3">
                         <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-500 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all">
@@ -633,6 +621,21 @@
                         <div class="text-[9px] font-mono text-slate-500">ASSIGNED STATES:</div>
                         <div class="text-[10px] px-2 py-1 bg-black/40 border border-white/5 rounded truncate text-slate-300">DISCOVER</div>
                         <div class="text-[10px] px-2 py-1 bg-black/40 border border-white/5 rounded truncate text-slate-300">office-hours</div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl p-5 border-[#dc2626]/20 hover:border-[#dc2626]/50 transition-colors group">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-[#dc2626]/20 flex items-center justify-center text-[#dc2626] group-hover:shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all">
+                            <i class="ph-fill ph-layout text-xl"></i>
+                        </div>
+                        <span class="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded text-slate-400">Sonnet 3.5</span>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-[#dc2626] mb-1">APPLE <span class="text-xs text-slate-500 font-sans ml-1">毒りんご</span></h3>
+                    <p class="text-xs text-slate-400 font-sans mb-4 h-8">アーキテクチャ選定・UI設計doc生成。</p>
+                    <div class="space-y-1">
+                        <div class="text-[9px] font-mono text-slate-500">ASSIGNED STATES:</div>
+                        <div class="text-[10px] px-2 py-1 bg-black/40 border border-white/5 rounded truncate text-slate-300">DESIGN</div>
                     </div>
                 </div>
 
@@ -728,20 +731,31 @@
                     </div>
                 </div>
 
-                <div class="col-span-full xl:col-span-2 grid grid-cols-2 gap-4 mt-2">
+                <div class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                     <div class="glass-panel rounded-xl p-4 flex gap-4 items-center border-slate-500/20">
-                        <div class="w-12 h-12 rounded bg-slate-500/20 flex items-center justify-center text-slate-300"><i class="ph-fill ph-books text-2xl"></i></div>
+                        <div class="w-12 h-12 rounded bg-slate-500/20 flex items-center justify-center text-slate-300 shrink-0"><i class="ph-fill ph-books text-2xl"></i></div>
                         <div>
                             <h3 class="font-display font-bold text-slate-300">SLEEPY <span class="text-xs text-slate-500 font-sans">ねぼすけ</span></h3>
-                            <p class="text-[11px] text-slate-400 font-sans">RAG CURATOR. 全フロー後の知識蓄積を担当。</p>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">RAG CURATOR. 全フロー後の知識蓄積を担当。</p>
                         </div>
                     </div>
                     <div class="glass-panel rounded-xl p-4 flex gap-4 items-center border-white/10 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="w-12 h-12 rounded bg-white/10 flex items-center justify-center text-white"><i class="ph-fill ph-magic-wand text-2xl"></i></div>
+                        <div class="w-12 h-12 rounded bg-white/10 flex items-center justify-center text-white shrink-0"><i class="ph-fill ph-magic-wand text-2xl"></i></div>
                         <div>
                             <h3 class="font-display font-bold text-white">MIRROR <span class="text-xs text-slate-500 font-sans">魔法の鏡</span></h3>
-                            <p class="text-[11px] text-slate-400 font-sans">エラー発生時の指示書改善アドバイザー。</p>
+                            <p class="text-[11px] text-slate-400 font-sans mt-0.5">エラー発生時の指示書改善アドバイザー。</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-4 flex gap-4 items-center border-white/10 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="w-12 h-12 rounded bg-cyan-900/40 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shrink-0"><i class="ph-fill ph-cpu text-2xl"></i></div>
+                        <div>
+                            <h3 class="font-display font-bold text-white">汎用エージェント <span class="text-xs text-slate-500 font-sans">General</span></h3>
+                            <p class="text-[10px] text-slate-400 font-sans mt-1 flex gap-1">
+                                <span class="px-1.5 py-0.5 bg-black/40 border border-white/5 rounded">DESIGN_REVIEW</span>
+                                <span class="px-1.5 py-0.5 bg-black/40 border border-white/5 rounded">SHIP</span>
+                            </p>
                         </div>
                     </div>
                 </div>
